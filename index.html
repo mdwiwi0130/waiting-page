@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body{
+            margin: 0;
+            font-family: sans-serif;
+        }
+        .container{
+            background-color: #0d1117;
+            user-select: none;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .title{
+            color: #f0f6fc;
+            margin-top: 1em;
+            font-size: 80px;
+            font-weight: 700;
+            text-align: center;
+        }
+        .sorry-text{
+            color: #656c76;
+            margin-top: 0.5em;
+            font-size: 30px;
+            font-weight: 350;
+        }
+        .preparation{
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+
+        }
+        .Readybtn{
+            border: 0;
+            background-color: #2e9a40;
+            padding: 1rem 2rem;
+            font-size: 1.5rem ;
+            color: #f0f6fc;
+            border-radius: 10px;
+        }
+        .chose{
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            height: 80%;
+        }
+        .box{
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+        }
+    </style>
+<head>
+
+</html>
+<body>
+    <div class="container">
+        <div class="title">ERROR!!</div>
+        <div class="sorry-text">Sorry, the webpage is too busy. Please try again later.</div>
+        
+        <!--遊戲說明介面-->
+        <div class="preparation">
+            <h1 style="color: #f0f6fc; margin-bottom: 10px;">Cat Punch</h1>
+            <h3 style="color: #f0f6fc; margin-bottom: 10px;">How to play: If you know how to play Rock, Paper, Scissors, you can play this</h3>
+            <button  class="Readybtn">Ready</button>
+        </div>
+
+        <div class="chose" style="display: none;">
+            <div class="box left" style="background-color: #666;">
+                <h1 style="color: #f0f6fc;">Me</h1>
+            </div>
+            <div class="box right" style="background-color: #666;">
+                <h1 style="color: #f0f6fc;">Cat</h1>
+            </div>
+        </div>
+    </div>
+    <script>
+        const Ready = document.querySelector(".Readybtn");
+        const preparation = document.querySelector(".preparation");
+        const chose = document.querySelector(".chose");
+
+        Ready.addEventListener("click",function (){
+            preparation.style.display = 'none';
+            chose.style.display = 'flex';
+        });
+        
+    </script>
+</body>
