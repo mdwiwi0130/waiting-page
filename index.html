@@ -16,14 +16,14 @@
         }
         .title{
             color: #f0f6fc;
-            margin-top: 1em;
+            margin-top: 0.5em;
             font-size: 80px;
             font-weight: 700;
             text-align: center;
         }
         .sorry-text{
             color: #656c76;
-            margin-top: 0.5em;
+            margin-top: 4px;
             font-size: 30px;
             font-weight: 350;
         }
@@ -58,6 +58,41 @@
             text-align: center;
             border-radius: 10px;
         }
+        /* 添加新的樣式用於結果顯示時 */
+        .box.result-shown {
+            height: 40%;
+        }
+        .result {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+        .box img {
+            width: 120px;  /* 縮小圖片 */
+            height: auto;
+            margin: 10px;
+        }
+        
+        .result-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;  /* 圖片之間的間距 */
+        }
+        .chosebtn {
+            background-color: #0d1117;  /* 深黑色背景 */
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .chosebtn:hover {
+            background-color: #161b22;  /* 滑鼠懸停時稍微變亮 */
+        }
     </style>
 </html>
 
@@ -74,49 +109,85 @@
         </div>
 
         <div class="chose" style="display: none; justify-content: space-between;">
-            <div class="box left" style="background-color: #666;">
-                <h1 style="color: #f0f6fc;">Me</h1>
-                <button class="chosebtn" data-id="1"><img src="img/1.png" style="width: 35%;"></button>
-                <button class="chosebtn" data-id="2"><img src="img/2.png" style="width: 35%;"></button>
-                <button class="chosebtn" data-id="3"><img src="img/3.png" style="width: 35%;"></button>
-                <h3 id="playerChoiceText"></h3>
+            <div class="box left">
+                <h1>玩家</h1>
+                <h3 id="playerChoiceText">準備中...</h3>
+                <button class="chosebtn" data-id="1"><img src="img/1.png" alt="石頭"></button>
+                <button class="chosebtn" data-id="2"><img src="img/2.png" alt="剪刀"></button>
+                <button class="chosebtn" data-id="3"><img src="img/3.png" alt="布"></button>
             </div>
-            <div class="box right" style="background-color: #666;">
-                <h1 style="color: #f0f6fc;">Cat</h1>
-                <h3  id="cat_ans">Selecting...</h3>
+            <div class="box right">
+                <h1>貓咪</h1>
+                <h3 id="cat_ans">準備中...</h3>
             </div>
         </div>
 
         <div class="result" style="display: none;">
-            <h1></h1>
+            <h1 style="color: #f0f6fc;" id="resultText"></h1>
         </div>
     </div>
     <script>
         const Ready = document.querySelector(".Readybtn");
         const preparation = document.querySelector(".preparation");
         const chose = document.querySelector(".chose");
+        const resultDiv = document.querySelector(".result");
 
         async function sleep(duration) {
-        return new Promise((resolve) => setTimeout(resolve, duration));
+            return new Promise((resolve) => setTimeout(resolve, duration));
+        }
+
+        // 判斷勝負的函數
+        function determineWinner(playerChoice, computerChoice) {
+            if (playerChoice === computerChoice) return "平手！";
+            if (
+                (playerChoice === "1" && computerChoice === "2") ||  // 石頭(1) > 剪刀(2)
+                (playerChoice === "2" && computerChoice === "3") ||  // 剪刀(2) > 布(3)
+                (playerChoice === "3" && computerChoice === "1")     // 布(3) > 石頭(1)
+            ) {
+                return "你贏了！";
+            }
+            return "貓咪贏了！";
         }
 
         Ready.addEventListener("click",function (){
             preparation.style.display = 'none';
             chose.style.display = 'flex';
-            sleep(3000).then(() => {
-                document.getElementById("cat_ans").innerHTML="ok";
-            })
+            document.getElementById("cat_ans").innerHTML="思考中...";
         });
 
         const choseBtns = document.querySelectorAll(".chosebtn");
         const playerChoiceText = document.getElementById("playerChoiceText");
+        const catAnsText = document.getElementById("cat_ans");
+        const resultText = document.getElementById("resultText");
+
         choseBtns.forEach(btn => {
-            btn.addEventListener("click", function () {
-                const choice = btn.getAttribute("data-id");
-                playerChoiceText.innerHTML = `Your choice: ${choice}`;
+            btn.addEventListener("click", async function () {
+                const playerChoice = btn.getAttribute("data-id");
+                const choices = ["石頭", "剪刀", "布"];
+                
+                // 隱藏所有按鈕並縮減高度
                 choseBtns.forEach(button => {
                     button.style.display = 'none';
                 });
+                document.querySelector('.box.left').classList.add('result-shown');
+                document.querySelector('.box.right').classList.add('result-shown');
+
+                // 玩家開始思考
+                playerChoiceText.innerHTML = "思考中...";
+                // 貓咪已經在思考中，不需要再設置
+                
+                await sleep(1000);
+
+                // 同時顯示結果
+                const computerChoice = String(Math.floor(Math.random() * 3) + 1);
+                playerChoiceText.innerHTML = `<div class="result-display"><img src="img/${playerChoice}.png" alt="${choices[playerChoice-1]}"></div>`;
+                catAnsText.innerHTML = `<div class="result-display"><img src="img/${computerChoice}.png" alt="${choices[computerChoice-1]}"></div>`;
+
+                // 顯示結果
+                await sleep(500);
+                const result = determineWinner(playerChoice, computerChoice);
+                resultDiv.style.display = 'block';
+                resultText.innerHTML = result;
             });
         });
     </script>
