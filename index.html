@@ -93,11 +93,69 @@
         .chosebtn:hover {
             background-color: #161b22;  /* 滑鼠懸停時稍微變亮 */
         }
+        .score {
+            position: absolute;
+            top: -50px; /* 初始位置在畫面外 */
+            left: 50%;
+            transform: translateX(-50%);
+            color: #f0f6fc;
+            font-size: 24px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 10;
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .score.show {
+            top: 20px;
+            opacity: 1;
+        }
+
+        .score.hide {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .returnBtn {
+            background-color: #2e9a40;
+            border: none;
+            padding: 10px 20px;
+            color: #f0f6fc;
+            border-radius: 10px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .returnBtn:hover {
+            background-color: #3ab350;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: '...'; }
+        }
+
+        .thinking::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
     </style>
 </html>
 
 <body>
     <div class="container">
+        <div class="score">
+            <span>玩家: <span id="playerScore">0</span></span>
+            <span style="margin: 0 20px;">|</span>
+            <span>貓咪: <span id="catScore">0</span></span>
+        </div>
         <div class="title">ERROR!!</div>
         <div class="sorry-text">Sorry, the webpage is too busy. Please try again later.</div>
         
@@ -124,6 +182,7 @@
 
         <div class="result" style="display: none;">
             <h1 style="color: #f0f6fc;" id="resultText"></h1>
+            <button class="returnBtn">再玩一次</button>
         </div>
     </div>
     <script>
@@ -136,23 +195,46 @@
             return new Promise((resolve) => setTimeout(resolve, duration));
         }
 
-        // 判斷勝負的函數
+        let playerScore = 0;
+        let catScore = 0;
+        const playerScoreElement = document.getElementById("playerScore");
+        const catScoreElement = document.getElementById("catScore");
+
+        // 更新判斷勝負的函數
         function determineWinner(playerChoice, computerChoice) {
+            const scoreElement = document.querySelector('.score');
+            
+            // 顯示計分（不管是否平手都會顯示）
+            scoreElement.classList.add('show');
+            setTimeout(() => {
+                scoreElement.classList.add('hide');
+            }, 3000);
+
             if (playerChoice === computerChoice) return "平手！";
             if (
-                (playerChoice === "1" && computerChoice === "2") ||  // 石頭(1) > 剪刀(2)
-                (playerChoice === "2" && computerChoice === "3") ||  // 剪刀(2) > 布(3)
-                (playerChoice === "3" && computerChoice === "1")     // 布(3) > 石頭(1)
+                (playerChoice === "1" && computerChoice === "2") ||
+                (playerChoice === "2" && computerChoice === "3") ||
+                (playerChoice === "3" && computerChoice === "1")
             ) {
+                playerScore++;
+                playerScoreElement.textContent = playerScore;
                 return "你贏了！";
             }
+            catScore++;
+            catScoreElement.textContent = catScore;
             return "貓咪贏了！";
         }
 
-        Ready.addEventListener("click",function (){
+        // 在Ready按鈕點擊時隱藏計分
+        Ready.addEventListener("click", function(){
+            playerScore = 0;
+            catScore = 0;
+            playerScoreElement.textContent = "0";
+            catScoreElement.textContent = "0";
+            document.querySelector('.score').classList.remove('show', 'hide');
             preparation.style.display = 'none';
             chose.style.display = 'flex';
-            document.getElementById("cat_ans").innerHTML="思考中...";
+            document.getElementById("cat_ans").innerHTML="思考中<span class='thinking'></span>";
         });
 
         const choseBtns = document.querySelectorAll(".chosebtn");
@@ -173,8 +255,7 @@
                 document.querySelector('.box.right').classList.add('result-shown');
 
                 // 玩家開始思考
-                playerChoiceText.innerHTML = "思考中...";
-                // 貓咪已經在思考中，不需要再設置
+                playerChoiceText.innerHTML = "思考中<span class='thinking'></span>";
                 
                 await sleep(1000);
 
@@ -188,7 +269,39 @@
                 const result = determineWinner(playerChoice, computerChoice);
                 resultDiv.style.display = 'block';
                 resultText.innerHTML = result;
+
+                // 確保計分顯示
+                const scoreElement = document.querySelector('.score');
+                scoreElement.classList.remove('show', 'hide');  // 先移除所有類
+                void scoreElement.offsetWidth;  // 強制重繪
+                scoreElement.classList.add('show');  // 重新添加show類
+                setTimeout(() => {
+                    scoreElement.classList.add('hide');
+                }, 3000);
             });
+        });
+
+        // 返回按鈕的事件監聽也需要移除計分的類
+        document.querySelector('.returnBtn').addEventListener('click', function() {
+            // 隱藏結果顯示
+            resultDiv.style.display = 'none';
+            
+            // 重新顯示選擇按鈕
+            choseBtns.forEach(button => {
+                button.style.display = 'inline-block';
+            });
+            
+            // 移除結果顯示的樣式
+            document.querySelector('.box.left').classList.remove('result-shown');
+            document.querySelector('.box.right').classList.remove('result-shown');
+            
+            // 重置文字
+            playerChoiceText.innerHTML = "準備中...";
+            catAnsText.innerHTML = "思考中<span class='thinking'></span>";
+            
+            // 移除計分的所有類，確保下次可以重新觸發動畫
+            const scoreElement = document.querySelector('.score');
+            scoreElement.classList.remove('show', 'hide');
         });
     </script>
 </body>
