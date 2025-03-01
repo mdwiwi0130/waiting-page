@@ -22,7 +22,7 @@
             text-align: center;
         }
         .sorry-text{
-            color: #656c76;
+            color: #8b949e;
             margin-top: 4px;
             font-size: 30px;
             font-weight: 350;
@@ -37,26 +37,31 @@
 
         }
         .Readybtn{
-            border: 0;
-            background-color: #2e9a40;
+            background-color: #238636;
+            border: none;
             padding: 1rem 2rem;
             font-size: 1.5rem ;
-            color: #f0f6fc;
+            color: #ffffff;
             border-radius: 10px;
         }
-        .chose{
+        .Readybtn:hover {
+            background-color: #2ea043;
+        }
+        .chose {
             display: flex;
             justify-content: space-between;
             width: 80%;
-            height: 80%;
+            height: 100%;
+            position: relative;  /* 添加相對定位 */
         }
         .box{
             flex: 1;
             margin: 10px;
             padding: 20px;
-            color: white;
+            color: #c9d1d9;
             text-align: center;
             border-radius: 10px;
+            background-color: #161b22;
         }
         /* 添加新的樣式用於結果顯示時 */
         .box.result-shown {
@@ -64,11 +69,12 @@
         }
         .result {
             position: absolute;
-            top: 50%;
+            top: 55%;  /* 調整位置更靠上，從65%改為55% */
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
+            width: auto;
             text-align: center;
-            z-index: 10;
+            padding-top: 20px;
         }
         .box img {
             width: 120px;  /* 縮小圖片 */
@@ -83,7 +89,7 @@
             gap: 20px;  /* 圖片之間的間距 */
         }
         .chosebtn {
-            background-color: #0d1117;  /* 深黑色背景 */
+            background-color: #21262d;
             border: none;
             cursor: pointer;
             padding: 10px;
@@ -91,17 +97,17 @@
         }
 
         .chosebtn:hover {
-            background-color: #161b22;  /* 滑鼠懸停時稍微變亮 */
+            background-color: #30363d;
         }
         .score {
             position: absolute;
             top: -50px; /* 初始位置在畫面外 */
             left: 50%;
             transform: translateX(-50%);
-            color: #f0f6fc;
+            color: #c9d1d9;
             font-size: 24px;
             text-align: center;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: #161b22;
             padding: 10px 20px;
             border-radius: 10px;
             z-index: 10;
@@ -120,18 +126,17 @@
         }
 
         .returnBtn {
-            background-color: #2e9a40;
+            background-color: #238636;
             border: none;
             padding: 10px 20px;
-            color: #f0f6fc;
+            color: #ffffff;
             border-radius: 10px;
-            margin-top: 20px;
             cursor: pointer;
             font-size: 1.2rem;
         }
 
         .returnBtn:hover {
-            background-color: #3ab350;
+            background-color: #2ea043;
         }
 
         @keyframes dots {
@@ -146,43 +151,52 @@
             content: '';
             animation: dots 1.5s infinite;
         }
+
+        .box.left {
+            position: relative;  /* 添加相對定位 */
+        }
+
+        #resultText {
+            color: #f0f6fc;
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
     </style>
 </html>
 
 <body>
     <div class="container">
         <div class="score">
-            <span>玩家: <span id="playerScore">0</span></span>
+            <span>Player: <span id="playerScore">0</span></span>
             <span style="margin: 0 20px;">|</span>
-            <span>貓咪: <span id="catScore">0</span></span>
+            <span>Cat: <span id="catScore">0</span></span>
         </div>
         <div class="title">ERROR!!</div>
         <div class="sorry-text">Sorry, the webpage is too busy. Please try again later.</div>
         
-        <!--遊戲說明介面-->
+        <!--Game instruction interface-->
         <div class="preparation">
             <h1 style="color: #f0f6fc; margin-bottom: 10px;">Cat Punch</h1>
             <h3 style="color: #f0f6fc; margin-bottom: 10px;">How to play: If you know how to play Rock, Paper, Scissors, you can play this</h3>
-            <button  class="Readybtn">Ready</button>
+            <button class="Readybtn">Ready</button>
         </div>
 
         <div class="chose" style="display: none; justify-content: space-between;">
             <div class="box left">
-                <h1>玩家</h1>
-                <h3 id="playerChoiceText">準備中...</h3>
-                <button class="chosebtn" data-id="1"><img src="img/1.png" alt="石頭"></button>
-                <button class="chosebtn" data-id="2"><img src="img/2.png" alt="剪刀"></button>
-                <button class="chosebtn" data-id="3"><img src="img/3.png" alt="布"></button>
+                <h1>Player</h1>
+                <h3 id="playerChoiceText">Preparing...</h3>
+                <button class="chosebtn" data-id="1"><img src="img/1.png" alt="Rock"></button>
+                <button class="chosebtn" data-id="2"><img src="img/2.png" alt="Scissors"></button>
+                <button class="chosebtn" data-id="3"><img src="img/3.png" alt="Paper"></button>
             </div>
             <div class="box right">
-                <h1>貓咪</h1>
-                <h3 id="cat_ans">準備中...</h3>
+                <h1>Cat</h1>
+                <h3 id="cat_ans">Thinking<span class='thinking'></span></h3>
             </div>
-        </div>
-
-        <div class="result" style="display: none;">
-            <h1 style="color: #f0f6fc;" id="resultText"></h1>
-            <button class="returnBtn">再玩一次</button>
+            <div class="result" style="display: none;">
+                <h1 id="resultText"></h1>
+                <button class="returnBtn">Play Again</button>
+            </div>
         </div>
     </div>
     <script>
@@ -200,17 +214,17 @@
         const playerScoreElement = document.getElementById("playerScore");
         const catScoreElement = document.getElementById("catScore");
 
-        // 更新判斷勝負的函數
+        // Update the game result
         function determineWinner(playerChoice, computerChoice) {
             const scoreElement = document.querySelector('.score');
             
-            // 顯示計分（不管是否平手都會顯示）
+            // Show score
             scoreElement.classList.add('show');
             setTimeout(() => {
                 scoreElement.classList.add('hide');
             }, 3000);
 
-            if (playerChoice === computerChoice) return "平手！";
+            if (playerChoice === computerChoice) return "Draw!";
             if (
                 (playerChoice === "1" && computerChoice === "2") ||
                 (playerChoice === "2" && computerChoice === "3") ||
@@ -218,11 +232,11 @@
             ) {
                 playerScore++;
                 playerScoreElement.textContent = playerScore;
-                return "你贏了！";
+                return "You Win!";
             }
             catScore++;
             catScoreElement.textContent = catScore;
-            return "貓咪贏了！";
+            return "Cat Wins!";
         }
 
         // 在Ready按鈕點擊時隱藏計分
@@ -234,7 +248,7 @@
             document.querySelector('.score').classList.remove('show', 'hide');
             preparation.style.display = 'none';
             chose.style.display = 'flex';
-            document.getElementById("cat_ans").innerHTML="思考中<span class='thinking'></span>";
+            document.getElementById("cat_ans").innerHTML="Thinking<span class='thinking'></span>";
         });
 
         const choseBtns = document.querySelectorAll(".chosebtn");
@@ -245,7 +259,7 @@
         choseBtns.forEach(btn => {
             btn.addEventListener("click", async function () {
                 const playerChoice = btn.getAttribute("data-id");
-                const choices = ["石頭", "剪刀", "布"];
+                const choices = ["Rock", "Scissors", "Paper"];
                 
                 // 隱藏所有按鈕並縮減高度
                 choseBtns.forEach(button => {
@@ -255,7 +269,7 @@
                 document.querySelector('.box.right').classList.add('result-shown');
 
                 // 玩家開始思考
-                playerChoiceText.innerHTML = "思考中<span class='thinking'></span>";
+                playerChoiceText.innerHTML = "Thinking<span class='thinking'></span>";
                 
                 await sleep(1000);
 
@@ -296,8 +310,8 @@
             document.querySelector('.box.right').classList.remove('result-shown');
             
             // 重置文字
-            playerChoiceText.innerHTML = "準備中...";
-            catAnsText.innerHTML = "思考中<span class='thinking'></span>";
+            playerChoiceText.innerHTML = "Preparing...";
+            catAnsText.innerHTML = "Thinking<span class='thinking'></span>";
             
             // 移除計分的所有類，確保下次可以重新觸發動畫
             const scoreElement = document.querySelector('.score');
