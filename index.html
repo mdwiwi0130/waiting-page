@@ -162,7 +162,7 @@
             font-size: 32px;
         }
     </style>
-</html>
+</head>
 
 <body>
     <div class="container">
@@ -218,13 +218,15 @@
         function determineWinner(playerChoice, computerChoice) {
             const scoreElement = document.querySelector('.score');
             
-            // Show score
             scoreElement.classList.add('show');
             setTimeout(() => {
                 scoreElement.classList.add('hide');
             }, 3000);
 
-            if (playerChoice === computerChoice) return "Draw!";
+            if (playerChoice === computerChoice) {
+                return "Draw!";
+            }
+            
             if (
                 (playerChoice === "1" && computerChoice === "2") ||
                 (playerChoice === "2" && computerChoice === "3") ||
@@ -234,6 +236,7 @@
                 playerScoreElement.textContent = playerScore;
                 return "You Win!";
             }
+            
             catScore++;
             catScoreElement.textContent = catScore;
             return "Cat Wins!";
